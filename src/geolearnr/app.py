@@ -5,12 +5,13 @@ from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.static_files import StaticFilesConfig
 from litestar.template.config import TemplateConfig
 
+from geolearnr.routes.api import api_router
 from geolearnr.routes.index import router
 
 _BASE = Path(__file__).parent
 
 app = Litestar(
-    route_handlers=[router],
+    route_handlers=[router, api_router],
     template_config=TemplateConfig(
         directory=_BASE / "templates",
         engine=JinjaTemplateEngine,

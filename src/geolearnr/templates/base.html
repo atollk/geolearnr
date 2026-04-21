@@ -11,6 +11,8 @@
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+    <!-- HTMX SSE extension -->
+    <script src="https://unpkg.com/htmx-ext-sse@2.2.2/sse.js" defer></script>
     <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
   </head>
@@ -18,6 +20,9 @@
     <nav class="navbar bg-base-200 shadow-sm">
       <div class="navbar-start">
         <a href="/" class="btn btn-ghost text-xl font-bold">GeoLearnr</a>
+      </div>
+      <div class="navbar-end">
+        {% block navbar_end %}{% endblock %}
       </div>
     </nav>
 

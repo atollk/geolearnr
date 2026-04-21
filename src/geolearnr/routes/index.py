@@ -4,7 +4,7 @@ from litestar.response import Template
 
 @get("/")
 async def index() -> Template:
-    return Template(template_name="index.html", context={"title": "GeoLearnr"})
+    return Template(template_name="wizard.html", context={"title": "GeoLearnr"})
 
 
 router = Router(path="/", route_handlers=[index])
