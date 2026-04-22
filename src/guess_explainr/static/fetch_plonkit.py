@@ -1,14 +1,14 @@
 import contextlib
+import datetime
 import json
 import os
 import sys
-import datetime
-import tqdm
-from tqdm.contrib import DummyTqdmFile
 
+import tqdm
 from image_compress import compress as compress_image
-from plonkit_countries import fetch_countries, Country
+from plonkit_countries import Country, fetch_countries
 from plonkit_pdf import fetch_country_guide_pdf
+from tqdm.contrib import DummyTqdmFile
 
 
 @contextlib.contextmanager
@@ -32,7 +32,7 @@ def main():
 
     metadata_path = os.path.join(dir, "metadata.json")
     if os.path.exists(metadata_path):
-        with open(metadata_path, "r") as f:
+        with open(metadata_path) as f:
             metadata = json.load(f)
     else:
         metadata = {}

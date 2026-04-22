@@ -21,7 +21,7 @@ def compress(data: bytes, *, max_width: int = _MAX_WIDTH, quality: int = _JPEG_Q
     # Resize preserving aspect ratio
     if img.width > max_width:
         new_height = round(img.height * max_width / img.width)
-        img = img.resize((max_width, new_height), Image.LANCZOS)
+        img = img.resize((max_width, new_height), Image.Resampling.LANCZOS)
 
     # Flatten transparency onto white (JPEG cannot encode alpha)
     if img.mode in ("RGBA", "LA"):

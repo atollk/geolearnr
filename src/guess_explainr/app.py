@@ -5,8 +5,7 @@ from litestar.contrib.jinja import JinjaTemplateEngine
 from litestar.static_files import StaticFilesConfig
 from litestar.template.config import TemplateConfig
 
-from guess_explainr.routes.api import api_router
-from guess_explainr.routes.index import router
+from guess_explainr.routes.index import router, api_router
 
 _BASE = Path(__file__).parent
 
