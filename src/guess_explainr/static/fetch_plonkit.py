@@ -5,10 +5,11 @@ import os
 import sys
 
 import tqdm
-from image_compress import compress as compress_image
-from plonkit_countries import Country, fetch_countries
-from plonkit_pdf import fetch_country_guide_pdf
 from tqdm.contrib import DummyTqdmFile
+
+from image_compress import compress as compress_image  # pyrefly: ignore[missing-import]
+from plonkit_countries import Country, fetch_countries  # pyrefly: ignore[missing-import]
+from plonkit_pdf import fetch_country_guide_pdf  # pyrefly: ignore[missing-import]
 
 
 @contextlib.contextmanager

@@ -1,12 +1,6 @@
 from pydantic import BaseModel
 
 
-class ConfigRequest(BaseModel):
-    provider: str
-    model: str
-    api_key: str
-
-
 class ProcessUrlRequest(BaseModel):
     url: str
 

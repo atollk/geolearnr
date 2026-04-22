@@ -2,25 +2,31 @@ minimum_prek_version = "0.1.0"
 
 # Ruff – linting + formatting
 [[repos]]
-repo = "https://github.com/astral-sh/ruff-pre-commit"
-rev = "v0.11.6"
+repo = "local"
 
 [[repos.hooks]]
 id = "ruff"
+name = "ruff"
+entry = "uv run ruff check"
 args = ["--fix"]
 language = "system"
+types = ["python"]
 
 [[repos.hooks]]
 id = "ruff-format"
+name = "ruff-format"
+entry = "uv run ruff format"
 language = "system"
+types = ["python"]
 
 # Pyrefly – type checking
 [[repos]]
-repo = "https://github.com/facebook/pyrefly-pre-commit"
-rev = "0.62.0"
+repo = "local"
 
 [[repos.hooks]]
 id = "pyrefly-check"
+name = "pyrefly check"
+entry = "uv run pyrefly check"
 language = "system"
 pass_filenames = false
 

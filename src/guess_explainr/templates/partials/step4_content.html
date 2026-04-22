@@ -1,4 +1,7 @@
-<div x-data x-init="$dispatch('compare-done')">
+<script>
+  window.dispatchEvent(new CustomEvent('compare-done'));
+</script>
+<div x-data>
   <div class="prose max-w-none mb-6">
     <h3>Analysis</h3>
     {{ analysis | safe }}

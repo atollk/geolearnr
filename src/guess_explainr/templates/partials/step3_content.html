@@ -1,4 +1,9 @@
-<div x-data x-init="$dispatch('url-processed', { country: '{{ country }}', countries: {{ available_countries | tojson }} })">
+<script>
+  window.dispatchEvent(new CustomEvent('url-processed', {
+    detail: { country: '{{ country }}', countries: {{ available_countries | tojson }} }
+  }));
+</script>
+<div>
   <div class="flex items-center gap-2 mb-4">
     <span class="text-sm font-semibold text-base-content/60 uppercase tracking-wide">Detected country</span>
     <span class="badge badge-primary badge-lg">{{ country }}</span>

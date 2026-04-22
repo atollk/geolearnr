@@ -5,8 +5,5 @@
   <span>Configuration saved! Advancing…</span>
 </div>
 <script>
-  document.addEventListener("htmx:afterSettle", function handler() {
-    document.removeEventListener("htmx:afterSettle", handler);
-    document.dispatchEvent(new CustomEvent("config-saved"));
-  });
+  window.dispatchEvent(new CustomEvent("config-saved"));
 </script>

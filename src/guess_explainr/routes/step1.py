@@ -3,9 +3,9 @@ import enum
 import niquests
 from litestar import get, post
 from litestar.response import Template
+from pydantic import BaseModel
 
 from guess_explainr import state
-from guess_explainr.models import ConfigRequest
 
 
 class ModelProvider(enum.Enum):
@@ -76,7 +76,13 @@ async def get_config() -> dict:
     return {"configured": state.get_config() is not None}
 
 
+class ConfigRequest(BaseModel):
+    provider: str
+    model: str
+    api_key: str
+
+
 @post("/config")
 async def save_config(data: ConfigRequest) -> Template:
-    state.set_config({"provider": data.provider, "model": data.model})
+    state.set_config_values({"provider": data.provider, "model": data.model})
     return Template(template_name="partials/config_success.html", context={})

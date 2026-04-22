@@ -7,7 +7,8 @@
   hx-target="#step3-area"
   hx-swap="innerHTML"
   hx-indicator="#url-spinner"
-  hx-on::after-request="if(event.detail.successful) step = 3"
+  hx-ext="json-enc"
+  hx-on::afterRequest="if(event.detail.successful) step = 3"
 >
   <div class="form-control mb-4">
     <input
