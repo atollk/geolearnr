@@ -1,0 +1,25 @@
+<p class="text-base-content/60 text-sm mb-4">
+  Copy any Google Maps URL of a location you want to learn about.
+</p>
+
+<form
+  hx-post="/api/process-url"
+  hx-target="#step3-area"
+  hx-swap="innerHTML"
+  hx-indicator="#url-spinner"
+  hx-on::after-request="if(event.detail.successful) step = 3"
+>
+  <div class="form-control mb-4">
+    <input
+      type="url"
+      name="url"
+      class="input input-bordered w-full"
+      placeholder="https://maps.google.com/…"
+      required
+    />
+  </div>
+  <div class="flex items-center gap-3">
+    <button type="submit" class="btn btn-primary">Analyze Location</button>
+    <span id="url-spinner" class="htmx-indicator loading loading-spinner loading-sm"></span>
+  </div>
+</form>

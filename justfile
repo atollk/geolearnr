@@ -11,7 +11,7 @@ bootstrap:
 
 # Run development server with auto-reload
 dev:
-    uv run uvicorn geolearnr.app:app --reload
+    uv run uvicorn guess_explainr.app:app --reload
 
 # Lint with ruff
 lint:
@@ -43,3 +43,9 @@ hooks:
 
 # Run lint + format check + typecheck
 check: lint fmt-check typecheck
+
+# Pull the Plonkit source files (can take a long time)
+pull-sources:
+    cd src/guess_explainr/static
+    docker pull minidocks/weasyprint
+    uv run uv run src/guess_explainr/static/fetch_plonkit.py

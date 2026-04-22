@@ -1,0 +1,54 @@
+<div id="config-result"></div>
+
+<form
+  hx-post="/api/config"
+  hx-target="#config-result"
+  hx-swap="innerHTML"
+>
+  <div class="form-control mb-3">
+    <label class="label"><span class="label-text">Provider</span></label>
+    <select
+      name="provider"
+      class="select select-bordered"
+      hx-get="/api/models"
+      hx-target="#model-select"
+      hx-swap="innerHTML"
+      hx-trigger="change"
+      hx-include="[name='provider'],[name='api_key']"
+      hx-indicator="#models-spinner"
+    >
+      <option value="openai">OpenAI</option>
+      <option value="anthropic">Anthropic</option>
+      <option value="google">Google</option>
+    </select>
+  </div>
+
+  <div class="form-control mb-3">
+    <label class="label"><span class="label-text">API Key</span></label>
+    <input
+      type="password"
+      name="api_key"
+      class="input input-bordered"
+      placeholder="Your API key"
+      required
+      hx-get="/api/models"
+      hx-target="#model-select"
+      hx-swap="innerHTML"
+      hx-trigger="change"
+      hx-include="[name='provider'],[name='api_key']"
+      hx-indicator="#models-spinner"
+    />
+  </div>
+
+  <div class="form-control mb-4">
+    <label class="label">
+      <span class="label-text">Model</span>
+      <span id="models-spinner" class="htmx-indicator loading loading-spinner loading-xs"></span>
+    </label>
+    <select name="model" id="model-select" class="select select-bordered">
+      <option value="" disabled selected>Enter API key to load models…</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-primary w-full">Save &amp; Continue</button>
+</form>
