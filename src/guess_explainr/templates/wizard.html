@@ -28,10 +28,10 @@
 
   <!-- Steps indicator -->
   <ul class="steps w-full mb-8">
-    <li class="step" :class="step >= 1 ? 'step-primary' : ''">LLM Config</li>
-    <li class="step" :class="step >= 2 ? 'step-primary' : ''">Maps URL</li>
-    <li class="step" :class="step >= 3 ? 'step-primary' : ''">Compare</li>
-    <li class="step" :class="step >= 4 ? 'step-primary' : ''">Analysis</li>
+    <li class="step" :class="step >= 1 ? 'step-primary cursor-pointer' : ''" @click="step = 1">LLM Config</li>
+    <li class="step" :class="step >= 2 ? 'step-primary cursor-pointer' : ''" @click="if (step >= 2) step = 2">Maps URL</li>
+    <li class="step" :class="step >= 3 ? 'step-primary cursor-pointer' : ''" @click="if (step >= 3) step = 3">Compare</li>
+    <li class="step" :class="step >= 4 ? 'step-primary cursor-pointer' : ''" @click="if (step >= 4) step = 4">Analysis</li>
   </ul>
 
   <!-- ── Step 1: LLM Configuration ── -->

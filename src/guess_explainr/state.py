@@ -1,5 +1,4 @@
 import contextlib
-import dataclasses
 import json
 import logging
 import os.path
@@ -7,6 +6,8 @@ from collections.abc import Iterator
 from dataclasses import dataclass
 
 import platformdirs
+
+from guess_explainr import model_provider
 
 _dirs = platformdirs.PlatformDirs("guess_explainr")
 _config_file = os.path.join(_dirs.user_config_dir, "config.json")
@@ -17,6 +18,7 @@ os.makedirs(os.path.dirname(_config_file), exist_ok=True)
 @dataclass
 class InMemoryState:
     panorama_id: str | None = None
+    panorama_image_bytes: bytes | None = None
 
 
 in_memory_state = InMemoryState()
@@ -24,21 +26,35 @@ in_memory_state = InMemoryState()
 
 @dataclass
 class StateConfig:
-    ai_provider: str | None = None
+    ai_provider: model_provider.ModelProvider | None = None
     ai_model: str | None = None
+    api_key: str | None = None
 
 
 def get_config() -> StateConfig:
     try:
         with open(_config_file) as f:
-            return StateConfig(**json.load(f))
+            config = json.load(f)
     except FileNotFoundError:
+        return StateConfig()
+    try:
+        return StateConfig(
+            ai_provider=model_provider.ModelProvider(config["ai_provider"]),
+            ai_model=config["ai_model"],
+            api_key=config["api_key"],
+        )
+    except (TypeError, AttributeError, KeyError):
         return StateConfig()
 
 
 def set_config(config: StateConfig) -> None:
     with open(_config_file, "w") as f:
-        json.dump(dataclasses.asdict(config), f)
+        d = {
+            "ai_provider": config.ai_provider.value if config.ai_provider else None,
+            "ai_model": config.ai_model,
+            "api_key": config.api_key,
+        }
+        json.dump(d, f)
 
 
 @contextlib.contextmanager

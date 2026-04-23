@@ -9,10 +9,12 @@ from dataclasses import dataclass
 from geopy import Location
 from geopy.geocoders import Nominatim
 from litestar import post
+from litestar.exceptions import HTTPException
 from litestar.response import Template
 
 from guess_explainr import state
 from guess_explainr.models import ProcessUrlRequest
+from guess_explainr.routes.panorama import PanoramaFetchError, fetch_and_cache
 
 
 @dataclass
@@ -245,7 +247,15 @@ async def _country_from_coords(lat: float, lon: float) -> _Country | None:
 async def process_url(data: ProcessUrlRequest) -> Template:
     location = GoogleMapsLocation.parse(data.url)
     state.in_memory_state.panorama_id = location.panorama_id
-    country = await _country_from_coords(location.latitude, location.longitude)
+    state.in_memory_state.panorama_image_bytes = None
+
+    try:
+        country, _ = await asyncio.gather(
+            _country_from_coords(location.latitude, location.longitude),
+            fetch_and_cache(location.panorama_id) if location.panorama_id else asyncio.sleep(0),
+        )
+    except PanoramaFetchError as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
     if country is None:
         country = _Country(id="", display_name="")
     return Template(
@@ -254,6 +264,7 @@ async def process_url(data: ProcessUrlRequest) -> Template:
             "detected_country": country,
             "available_countries": COUNTRIES,
             "available_countries_json": json.dumps([dataclasses.asdict(c) for c in COUNTRIES]),
+            "panorama_available": state.in_memory_state.panorama_image_bytes is not None,
         },
     )
 

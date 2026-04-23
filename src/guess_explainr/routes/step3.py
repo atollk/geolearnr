@@ -1,4 +1,5 @@
 from litestar import post
+from litestar.exceptions import HTTPException
 from litestar.response import Template
 
 from guess_explainr import state
@@ -8,8 +9,10 @@ from guess_explainr.models import CompareRequest
 
 @post("/compare")
 async def compare(data: CompareRequest) -> Template:
-    # panorama_image = _load_location_panorama()
-    analysis = run_analysis(data.compare_countries, data.questions)
+    try:
+        analysis = await run_analysis(data.compare_countries, data.questions)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e)) from e
     context_text = f"{', '.join(data.compare_countries)}"
     return Template(
         template_name="partials/step4_content.html",
