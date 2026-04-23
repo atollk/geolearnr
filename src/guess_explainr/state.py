@@ -29,6 +29,7 @@ class StateConfig:
     ai_provider: model_provider.ModelProvider | None = None
     ai_model: str | None = None
     api_key: str | None = None
+    maps_api_key: str | None = None
 
 
 def get_config() -> StateConfig:
@@ -42,6 +43,7 @@ def get_config() -> StateConfig:
             ai_provider=model_provider.ModelProvider(config["ai_provider"]),
             ai_model=config["ai_model"],
             api_key=config["api_key"],
+            maps_api_key=config.get("maps_api_key") or None,
         )
     except (TypeError, AttributeError, KeyError):
         return StateConfig()
@@ -53,6 +55,7 @@ def set_config(config: StateConfig) -> None:
             "ai_provider": config.ai_provider.value if config.ai_provider else None,
             "ai_model": config.ai_model,
             "api_key": config.api_key,
+            "maps_api_key": config.maps_api_key or None,
         }
         json.dump(d, f)
 

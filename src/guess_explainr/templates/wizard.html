@@ -115,6 +115,35 @@ function wizard() {
       }
     },
 
+    async doCompare(form) {
+      const questions = form.querySelector('[name=questions]').value;
+      const errorSpan = document.getElementById('compare-error');
+      const spinner = document.getElementById('compare-spinner');
+      errorSpan.textContent = '';
+      spinner.classList.add('htmx-request');
+      try {
+        const res = await fetch('/api/compare', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ compare_countries: this.selectedCountries, questions }),
+        });
+        if (res.ok) {
+          const html = await res.text();
+          const area = document.getElementById('step4-area');
+          area.innerHTML = html;
+          htmx.process(area);
+          window.dispatchEvent(new CustomEvent('compare-done'));
+        } else {
+          const err = await res.json().catch(() => ({}));
+          errorSpan.textContent = err?.detail ?? 'An unexpected error occurred.';
+        }
+      } catch (e) {
+        errorSpan.textContent = 'Request failed: ' + e.message;
+      } finally {
+        spinner.classList.remove('htmx-request');
+      }
+    },
+
     sendChat({ url, message }) {
       const area = document.getElementById('chat-messages');
 
@@ -124,28 +153,24 @@ function wizard() {
       userBubble.innerHTML = `<div class="chat-bubble chat-bubble-primary">${this._escape(message)}</div>`;
       area.appendChild(userBubble);
 
-      // Response bubble with SSE connection
-      const id = Date.now();
+      // Response bubble — HTMX SSE swaps in rendered HTML on the 'done' event
       const responseBubble = document.createElement('div');
       responseBubble.className = 'chat chat-start';
       responseBubble.innerHTML = `
-        <div id="resp-${id}" class="chat-bubble"
+        <div class="chat-bubble prose max-w-none"
           hx-ext="sse"
           sse-connect="${url}"
-          sse-swap="token"
-          hx-swap="beforeend"
+          sse-swap="done"
+          hx-swap="innerHTML"
           sse-close="done"
-        ></div>`;
+        ><span class="loading loading-dots loading-sm"></span></div>`;
       area.appendChild(responseBubble);
-
-      // Let HTMX process the newly added SSE element, then scroll to newest message
       htmx.process(responseBubble);
       area.scrollTop = area.scrollHeight;
 
-      // Keep scrolling to bottom as SSE tokens stream in
-      const observer = new MutationObserver(() => { area.scrollTop = area.scrollHeight; });
-      observer.observe(responseBubble, { childList: true, subtree: true, characterData: true });
-      responseBubble.addEventListener('htmx:sseClose', () => observer.disconnect(), { once: true });
+      responseBubble.addEventListener('htmx:sseMessage', () => {
+        area.scrollTop = area.scrollHeight;
+      }, { once: true });
     },
 
     _escape(str) {

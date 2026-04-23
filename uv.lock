@@ -1202,10 +1202,12 @@ dependencies = [
     { name = "frozendict" },
     { name = "geopy" },
     { name = "litestar", extra = ["jinja"] },
+    { name = "markdown" },
     { name = "niquests" },
     { name = "platformdirs" },
     { name = "pydantic-ai" },
     { name = "streetview" },
+    { name = "streetview-dl" },
     { name = "uvicorn", extra = ["standard"] },
 ]
 
@@ -1227,10 +1229,12 @@ requires-dist = [
     { name = "frozendict", specifier = ">=2.4.7" },
     { name = "geopy", specifier = ">=2.4.1" },
     { name = "litestar", extras = ["jinja"], specifier = ">=2.14" },
+    { name = "markdown", specifier = ">=3.10.2" },
     { name = "niquests", specifier = ">=3.18.6" },
     { name = "platformdirs", specifier = ">=4.9.6" },
     { name = "pydantic-ai", specifier = ">=1.86.0" },
     { name = "streetview", specifier = ">=0.1.0" },
+    { name = "streetview-dl", git = "https://github.com/stiles/streetview-dl" },
     { name = "uvicorn", extras = ["standard"], specifier = ">=0.45" },
 ]
 
@@ -2084,6 +2088,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/58/1b/0c74ad85f977743ba4c589e46e0cb138d6a6e69487830f4e86ebbdb145a3/logfire_api-4.32.1.tar.gz", hash = "sha256:5e8714b2bb5fb5d1f4a4a833941e4ca711b75d2c1f98e76c5ad680fe6991af6a", size = 78788, upload-time = "2026-04-15T14:11:58.788Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/0c/ab/d5adeab6253c7ecd5904fc5ef3265859f218610caf4e1e55efe9aff6ac49/logfire_api-4.32.1-py3-none-any.whl", hash = "sha256:4b4c27cf6e27e8e26ef4b22a77f2a2988dd1d07e2d24ee70673ef34b234fb8a5", size = 124394, upload-time = "2026-04-15T14:11:56.157Z" },
+]
+
+[[package]]
+name = "markdown"
+version = "3.10.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/2b/f4/69fa6ed85ae003c2378ffa8f6d2e3234662abd02c10d216c0ba96081a238/markdown-3.10.2.tar.gz", hash = "sha256:994d51325d25ad8aa7ce4ebaec003febcce822c3f8c911e3b17c52f7f589f950", size = 368805, upload-time = "2026-02-09T14:57:26.942Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/de/1f/77fa3081e4f66ca3576c896ae5d31c3002ac6607f9747d2e3aa49227e464/markdown-3.10.2-py3-none-any.whl", hash = "sha256:e91464b71ae3ee7afd3017d9f358ef0baf158fd9a298db92f1d4761133824c36", size = 108180, upload-time = "2026-02-09T14:57:25.787Z" },
 ]
 
 [[package]]
@@ -4053,6 +4066,18 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/eb/e5/5a6cc72005a20e3a25f88f6878c71dbcfd1c9bb5dc0f0dd66945b43aaf92/streetview-0.1.0.tar.gz", hash = "sha256:d4510f71c409c5682000b2c7d2437f2a16f61ddced4ce6b255e675409204af94", size = 7722, upload-time = "2026-04-15T18:25:02.505Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/68/97/6e6610c04769647fc6e7f72e86ff98e12595c196bfc8a51a534004bd7f75/streetview-0.1.0-py3-none-any.whl", hash = "sha256:3eae8e1dbe7264d86c6ca79bad93902a31a3d5ae20338c2676da6fb9936fef15", size = 8450, upload-time = "2026-04-15T18:25:03.582Z" },
+]
+
+[[package]]
+name = "streetview-dl"
+version = "0.7.0"
+source = { git = "https://github.com/stiles/streetview-dl#854d8868a9ebdcd398d38a7944e0d10d401c12ad" }
+dependencies = [
+    { name = "click" },
+    { name = "pillow" },
+    { name = "pydantic" },
+    { name = "requests" },
+    { name = "rich" },
 ]
 
 [[package]]

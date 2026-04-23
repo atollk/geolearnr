@@ -5,7 +5,7 @@ from guess_explainr.routes.panorama import panorama_image
 from guess_explainr.routes.step1 import get_config, get_models, save_config
 from guess_explainr.routes.step2 import process_url
 from guess_explainr.routes.step3 import compare
-from guess_explainr.routes.step4 import chat, new_chat_id
+from guess_explainr.routes.step4 import analysis_stream, chat, new_chat_id
 
 
 @get("/")
@@ -22,6 +22,7 @@ api_router = Router(
         process_url,
         panorama_image,
         compare,
+        analysis_stream,
         chat,
         new_chat_id,
     ],

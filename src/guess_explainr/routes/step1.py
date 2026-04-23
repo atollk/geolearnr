@@ -32,6 +32,7 @@ class ConfigRequest(BaseModel):
     provider: str
     model: str
     api_key: str
+    maps_api_key: str = ""
 
 
 @post("/config")
@@ -40,4 +41,5 @@ async def save_config(data: ConfigRequest) -> Template:
         config.ai_provider = ModelProvider(data.provider)
         config.ai_model = data.model
         config.api_key = data.api_key
+        config.maps_api_key = data.maps_api_key or None
     return Template(template_name="partials/config_success.html", context={})

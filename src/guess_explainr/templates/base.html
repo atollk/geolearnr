@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{% block title %}GeoLearnr{% endblock %}</title>
 
-    <!-- DaisyUI (includes Tailwind CSS) -->
+    <!-- DaisyUI -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css"/>
+
+    <!-- TailwindCSS-->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/typography@0.5.19/src/index.min.js"></script>
 
     <!-- HTMX -->
     <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
@@ -17,11 +20,6 @@
     <script src="https://unpkg.com/htmx-ext-json-enc@2.0.1/json-enc.js" defer></script>
     <!-- Alpine.js -->
     <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
-
-    <!-- Marked.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/16.3.0/lib/marked.esm.js"
-            integrity="sha512-gxBP/mcwo9A5lJDFbVfXNb1hSLpOkHLLXAjld8HfCWjVIZnA3nlNnIqSTLvtwF4t55Dt4Rzh7phL3tJuKZ+teQ=="
-            crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
 <body class="min-h-screen bg-base-100">
 <nav class="navbar bg-base-200 shadow-sm">

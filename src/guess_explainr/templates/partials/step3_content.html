@@ -41,22 +41,7 @@
     </div>
   </div>
 
-  <form
-    hx-post="/api/compare"
-    hx-target="#step4-area"
-    hx-swap="innerHTML"
-    hx-indicator="#compare-spinner"
-    hx-ext="json-enc"
-    :hx-vals="JSON.stringify({compare_countries: selectedCountries})"
-    hx-on::after-request="
-      if (event.detail.successful) {
-        document.getElementById('compare-error').textContent = '';
-      } else {
-        document.getElementById('compare-error').textContent =
-          JSON.parse(event.detail.xhr.responseText)?.detail ?? 'An unexpected error occurred.';
-      }
-    "
-  >
+  <form @submit.prevent="doCompare($el)">
     <div class="form-control mb-4">
       <label class="label" for="questions"><span class="label-text">Custom questions (optional)</span></label>
       <textarea id="questions" name="questions" class="textarea textarea-bordered w-full" rows="3"
@@ -71,7 +56,7 @@
         Compare
       </button>
       <span id="compare-error" class="text-error text-sm"></span>
-      <span id="compare-spinner" class="htmx-indicator loading loading-spinner loading-sm"></span>
+      <span id="compare-spinner" class="loading loading-spinner loading-sm" style="display:none"></span>
     </div>
   </form>
 </div>

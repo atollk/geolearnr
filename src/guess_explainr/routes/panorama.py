@@ -8,6 +8,7 @@ import streetview.download as _sv_dl
 from litestar import get
 from litestar.exceptions import NotFoundException
 from litestar.response import Response
+from streetview_dl import StreetViewDownloader
 
 from guess_explainr import state
 
@@ -66,22 +67,49 @@ class PanoramaFetchError(Exception):
     pass
 
 
+def _fetch_via_official_api(panorama_id: str, maps_api_key: str) -> None:
+    """Download using the official Maps Tiles API via streetview-dl."""
+    try:
+        downloader = StreetViewDownloader(api_key=maps_api_key)
+        metadata = downloader.get_metadata(pano_id=panorama_id)
+        img = downloader.download_panorama(metadata, quality="low")
+    except Exception as e:
+        raise PanoramaFetchError(
+            f"Could not download the Street View image via the official API: {e}"
+        ) from e
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG")
+    state.in_memory_state.panorama_image_bytes = buf.getvalue()
+
+
+def _fetch_via_scraping(panorama_id: str) -> None:
+    """Download by scraping (no API key required, but may be blocked)."""
+    try:
+        img = streetview.get_panorama(pano_id=panorama_id, zoom=2, multi_threaded=False)
+    except Exception as e:
+        raise PanoramaFetchError(
+            "Could not download the Street View image — Google may be blocking the request."
+        ) from e
+    buf = io.BytesIO()
+    img.save(buf, format="JPEG")
+    state.in_memory_state.panorama_image_bytes = buf.getvalue()
+
+
 async def fetch_and_cache(panorama_id: str) -> None:
     """Download the Street View panorama and store JPEG bytes in state.
 
+    Uses the official Maps Tiles API if a Maps API key is configured,
+    otherwise falls back to scraping.
+
     Raises PanoramaFetchError on failure.
     """
+    maps_api_key = state.get_config().maps_api_key
 
     def _blocking() -> None:
-        try:
-            img = streetview.get_panorama(pano_id=panorama_id, zoom=2, multi_threaded=False)
-        except Exception as e:
-            raise PanoramaFetchError(
-                "Could not download the Street View image — Google may be blocking the request."
-            ) from e
-        buf = io.BytesIO()
-        img.save(buf, format="JPEG")
-        state.in_memory_state.panorama_image_bytes = buf.getvalue()
+        if maps_api_key:
+            _fetch_via_official_api(panorama_id, maps_api_key)
+        else:
+            _fetch_via_scraping(panorama_id)
 
     await asyncio.to_thread(_blocking)
 

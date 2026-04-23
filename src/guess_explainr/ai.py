@@ -1,5 +1,6 @@
 import dataclasses
 import pathlib
+from collections.abc import AsyncGenerator
 
 from pydantic_ai import Agent, BinaryContent, RunContext
 
@@ -81,3 +82,23 @@ async def run_analysis(
     )
 
     return response.response.text or "<no response>"
+
+
+async def stream_analysis(
+    compare_country_ids: list[str],
+    user_questions: str,
+) -> AsyncGenerator[str, None]:
+    agent = _make_agent()
+    guides = [_load_plonkit_guide(country_id) for country_id in compare_country_ids]
+    image_prompt = [
+        "This is the Street View panorama image that you are supposed to analyze:",
+        _load_panorama_image(),
+    ]
+    async with agent.run_stream(
+        user_prompt=image_prompt + guides,
+        deps=AgentDependency(
+            compare_country_ids=compare_country_ids, user_questions=user_questions
+        ),
+    ) as result:
+        async for text in result.stream_text(delta=True):
+            yield text

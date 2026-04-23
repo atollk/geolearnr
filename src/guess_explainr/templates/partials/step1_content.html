@@ -53,5 +53,21 @@
         </select>
     </div>
 
+    <div class="form-control mb-4">
+        <label class="label" for="maps-api-key">
+            <span class="label-text">Google Maps API Key <span class="text-base-content/50">(optional)</span></span>
+        </label>
+        <input
+                id="maps-api-key"
+                type="password"
+                name="maps_api_key"
+                class="input input-bordered"
+                placeholder="For high-quality panoramas via official API"
+        />
+        <label class="label">
+            <span class="label-text-alt text-base-content/50">If omitted, panoramas are fetched by scraping (may be unreliable)</span>
+        </label>
+    </div>
+
     <button type="submit" class="btn btn-primary w-full">Save &amp; Continue</button>
 </form>
