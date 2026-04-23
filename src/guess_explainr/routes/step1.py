@@ -84,5 +84,7 @@ class ConfigRequest(BaseModel):
 
 @post("/config")
 async def save_config(data: ConfigRequest) -> Template:
-    state.set_config_values({"provider": data.provider, "model": data.model})
+    with state.modify_config() as config:
+        config.ai_provider = data.provider
+        config.ai_model = data.model
     return Template(template_name="partials/config_success.html", context={})

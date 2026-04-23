@@ -11,6 +11,7 @@ from geopy.geocoders import Nominatim
 from litestar import post
 from litestar.response import Template
 
+from guess_explainr import state
 from guess_explainr.models import ProcessUrlRequest
 
 
@@ -243,6 +244,7 @@ async def _country_from_coords(lat: float, lon: float) -> _Country | None:
 @post("/process-url")
 async def process_url(data: ProcessUrlRequest) -> Template:
     location = GoogleMapsLocation.parse(data.url)
+    state.in_memory_state.panorama_id = location.panorama_id
     country = await _country_from_coords(location.latitude, location.longitude)
     if country is None:
         country = _Country(id="", display_name="")
