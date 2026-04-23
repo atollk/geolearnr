@@ -1,37 +1,57 @@
 <!--Testing 'prose' class-->
 <div class="prose max-w-none mb-6">
-  <h3>Analysis</h3>
-  <div class="prose prose-sm md:prose-base">
-    <p>Based on the provided guides and the visual evidence in the Street View panorama, this location is in <strong>Greece</strong>.</p>
-    <p>Here is a breakdown of the clues used to identify this location:</p>
-    <h3 class="h3">1. Landscape and Terrain</h3>
-    <p>As noted in the <strong>Greece guide (page 5)</strong>, Greece is a very mountainous country, with a large portion of its Google Street View coverage taken on winding mountain roads. The image shows a narrow road crossing a bridge in a high-relief, mountainous area, which is highly characteristic of the Greek interior, particularly regions like the Pindus Mountains.</p>
-    <h3>2. Vegetation and Seasonality (The Autumn Meta)</h3>
-    <p>The <strong>Greece guide (page 5)</strong> mentions that the country has a lot of "Generation 3 winter and fall coverage."
-      *   In this image, the trees are displaying vibrant yellow and orange colors, which is a classic indicator of autumn coverage.
-      *   While the <strong>Croatia guide (page 2)</strong> also mentions an "autumn quirk" for Generation 3, the specific species of trees seen here—particularly the large <strong>Platanus (Plane trees)</strong> growing along the riverbed with their distinct yellow leaves—are a very common sight in the mountainous river valleys of mainland Greece.</p>
-    <h3>3. Infrastructure</h3>
-    <p>The bridge features a specific style of grey metal railing with four horizontal bars. While bridge railings vary, this specific "utility" look is very common on secondary rural roads in Greece. Unlike <strong>Turkey</strong>, which the guide (page 2) notes often features "divided highways" and a "salt and pepper" road texture, this is a narrow, older asphalt road typical of Greek mountain passes.</p>
-    <h3>4. Comparison with Other Options</h3>
-    <ul>
-      <li><strong>Why not Croatia?</strong> While Croatia has rocky mountains along the coast, the <strong>Croatia guide (page 5)</strong> states that those areas usually feature "shrubs instead of trees." The dense, lush forest seen here is more indicative of the Greek mainland or Northern Turkey.</li>
-      <li><strong>Why not Turkey?</strong> Although Northern Turkey can be lush and forested, the overall "vibe" of the road quality and the specific type of autumn foliage (the Plane trees) aligns more closely with the Greek "fall/winter" coverage described in the guide.</li>
-    </ul>
-    <p><strong>Summary for Geoguessr Players:</strong>
-      When you see lush, mountainous terrain with vibrant yellow autumn leaves (especially Plane trees in a riverbed) on a narrow, winding road, <strong>mainland Greece</strong> should be your primary consideration.</p></div>
+    <h3>Analysis</h3>
+    <div class="prose prose-sm md:prose-base">
+        <p>Based on the provided guides and the visual evidence in the Street View panorama, this location is in
+            <strong>Greece</strong>.</p>
+        <p>Here is a breakdown of the clues used to identify this location:</p>
+        <h3 class="h3">1. Landscape and Terrain</h3>
+        <p>As noted in the <strong>Greece guide (page 5)</strong>, Greece is a very mountainous country, with a large
+            portion of its Google Street View coverage taken on winding mountain roads. The image shows a narrow road
+            crossing a bridge in a high-relief, mountainous area, which is highly characteristic of the Greek interior,
+            particularly regions like the Pindus Mountains.</p>
+        <h3>2. Vegetation and Seasonality (The Autumn Meta)</h3>
+        <p>The <strong>Greece guide (page 5)</strong> mentions that the country has a lot of "Generation 3 winter and
+            fall coverage."
+            * In this image, the trees are displaying vibrant yellow and orange colors, which is a classic indicator of
+            autumn coverage.
+            * While the <strong>Croatia guide (page 2)</strong> also mentions an "autumn quirk" for Generation 3, the
+            specific species of trees seen here—particularly the large <strong>Platanus (Plane trees)</strong> growing
+            along the riverbed with their distinct yellow leaves—are a very common sight in the mountainous river
+            valleys of mainland Greece.</p>
+        <h3>3. Infrastructure</h3>
+        <p>The bridge features a specific style of grey metal railing with four horizontal bars. While bridge railings
+            vary, this specific "utility" look is very common on secondary rural roads in Greece. Unlike
+            <strong>Turkey</strong>, which the guide (page 2) notes often features "divided highways" and a "salt and
+            pepper" road texture, this is a narrow, older asphalt road typical of Greek mountain passes.</p>
+        <h3>4. Comparison with Other Options</h3>
+        <ul>
+            <li><strong>Why not Croatia?</strong> While Croatia has rocky mountains along the coast, the <strong>Croatia
+                guide (page 5)</strong> states that those areas usually feature "shrubs instead of trees." The dense,
+                lush forest seen here is more indicative of the Greek mainland or Northern Turkey.
+            </li>
+            <li><strong>Why not Turkey?</strong> Although Northern Turkey can be lush and forested, the overall "vibe"
+                of the road quality and the specific type of autumn foliage (the Plane trees) aligns more closely with
+                the Greek "fall/winter" coverage described in the guide.
+            </li>
+        </ul>
+        <p><strong>Summary for Geoguessr Players:</strong>
+            When you see lush, mountainous terrain with vibrant yellow autumn leaves (especially Plane trees in a
+            riverbed) on a narrow, winding road, <strong>mainland Greece</strong> should be your primary consideration.
+        </p></div>
 </div>
 
 <p class="text-base-content/60 text-sm mb-4">
-  Copy any Google Maps URL of a location you want to learn about.
+    Copy any Google Maps URL of a location you want to learn about.
 </p>
 
 <form
-  hx-post="/api/process-url"
-  hx-target="#step3-area"
-  hx-swap="innerHTML"
-  hx-indicator="#url-spinner"
-  hx-ext="json-enc"
-  hx-on::after-request="
+        hx-post="/api/process-url"
+        hx-target="#step3-area"
+        hx-swap="innerHTML"
+        hx-indicator="#url-spinner"
+        hx-ext="json-enc"
+        hx-on::after-request="
     if (event.detail.successful) {
       step = 3;
       document.getElementById('url-error').textContent = '';
@@ -41,23 +61,26 @@
     }
   "
 >
-  <div class="form-control mb-4">
-    <input
-      type="url"
-      name="url"
-      class="input input-bordered w-full"
-      placeholder="https://maps.google.com/…"
-      required
-    />
-  </div>
-  <div class="flex items-center gap-3 flex-wrap">
-    <button type="submit" class="btn btn-primary">Analyze Location</button>
-    <button
-      type="button"
-      class="btn btn-ghost btn-sm"
-      @click="$el.closest('form').querySelector('[name=url]').value = 'https://www.google.com/maps/@38.0691925,22.2390295,3a,90y,302.4h,92.61t/data=!3m7!1e1!3m5!1sC7dD4mGuuHHm6SjUq80gtw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-2.612560000000002%26panoid%3DC7dD4mGuuHHm6SjUq80gtw%26yaw%3D302.40146!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDEwNC4wIKXMDSoASAFQAw%3D%3D'"
-    >Example</button>
-    <span id="url-spinner" class="htmx-indicator loading loading-spinner loading-sm"></span>
-    <span id="url-error" class="text-error text-sm"></span>
-  </div>
+    <div class="form-control mb-4">
+        <input
+                type="url"
+                name="url"
+                class="input input-bordered w-full"
+                placeholder="https://maps.google.com/…"
+                required
+        />
+    </div>
+    <div class="mb-4">
+        <button
+                type="button"
+                class="btn btn-ghost btn-sm"
+                @click="$el.closest('form').querySelector('[name=url]').value = 'https://www.google.com/maps/@38.0691925,22.2390295,3a,90y,302.4h,92.61t/data=!3m7!1e1!3m5!1sC7dD4mGuuHHm6SjUq80gtw!2e0!6shttps:%2F%2Fstreetviewpixels-pa.googleapis.com%2Fv1%2Fthumbnail%3Fcb_client%3Dmaps_sv.tactile%26w%3D900%26h%3D600%26pitch%3D-2.612560000000002%26panoid%3DC7dD4mGuuHHm6SjUq80gtw%26yaw%3D302.40146!7i16384!8i8192?entry=ttu&g_ep=EgoyMDI2MDEwNC4wIKXMDSoASAFQAw%3D%3D'"
+        >Use an example
+        </button>
+    </div>
+    <div class="flex items-center gap-3 flex-wrap">
+        <button type="submit" class="btn btn-primary">Analyze Location</button>
+        <span id="url-spinner" class="htmx-indicator loading loading-spinner loading-sm"></span>
+        <span id="url-error" class="text-error text-sm"></span>
+    </div>
 </form>

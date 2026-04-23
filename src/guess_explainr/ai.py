@@ -63,30 +63,11 @@ def _load_panorama_image() -> BinaryContent:
     return BinaryContent(data=image_bytes, media_type="image/jpeg")
 
 
-async def run_analysis(
-    compare_country_ids: list[str],
-    user_questions: str,
-) -> str:
-    agent = _make_agent()
-    guides = [_load_plonkit_guide(country_id) for country_id in compare_country_ids]
-    image_prompt = [
-        "This is the Street View panorama image that you are supposed to analyze:",
-        _load_panorama_image(),
-    ]
-
-    response = await agent.run(
-        user_prompt=image_prompt + guides,
-        deps=AgentDependency(
-            compare_country_ids=compare_country_ids, user_questions=user_questions
-        ),
-    )
-
-    return response.response.text or "<no response>"
-
-
 async def stream_analysis(
     compare_country_ids: list[str],
     user_questions: str,
+    *,
+    only_delta: bool,
 ) -> AsyncGenerator[str, None]:
     agent = _make_agent()
     guides = [_load_plonkit_guide(country_id) for country_id in compare_country_ids]
@@ -100,5 +81,5 @@ async def stream_analysis(
             compare_country_ids=compare_country_ids, user_questions=user_questions
         ),
     ) as result:
-        async for text in result.stream_text(delta=True):
+        async for text in result.stream_text(delta=only_delta):
             yield text

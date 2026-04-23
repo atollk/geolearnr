@@ -8,7 +8,7 @@ from litestar.exceptions import HTTPException
 from litestar.response import ServerSentEvent
 from litestar.types import SSEData
 
-from guess_explainr.ai import run_analysis
+from guess_explainr.ai import stream_analysis
 
 
 @get("/chat")
@@ -41,8 +41,10 @@ async def analysis_stream(countries: str, questions: str = "") -> ServerSentEven
 
     async def _stream() -> AsyncGenerator[SSEData, None]:
         try:
-            full_text = await run_analysis(country_ids, questions)
-            rendered = _md.markdown(full_text, extensions=["extra"])
+            rendered = ""
+            async for partial_text in stream_analysis(country_ids, questions, only_delta=False):
+                rendered = _md.markdown(partial_text, extensions=["extra"])
+                yield {"data": rendered, "event": "msg"}
             yield {"data": rendered, "event": "done"}
         except Exception as e:
             error_html = f'<p class="text-error">{_html.escape(str(e))}</p>'
