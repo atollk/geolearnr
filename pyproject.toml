@@ -68,3 +68,7 @@ search_path = ["src", "src/guess_explainr/static"]
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 testpaths = ["tests"]
+
+[tool.uv]
+# streetview pulls in jupyter for no reason
+exclude-dependencies = ["jupyter"]
