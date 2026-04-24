@@ -37,7 +37,7 @@ Open a command line terminal and run the command :
 This will start the application and open a browser window at http://127.0.0.1:8000/ to access it.
 On slower computers, the browser tab may open before the application is ready - in that case, just refresh after a few seconds.
 
-## Using pipx
+### Using pipx
 
 [Installing pipx](https://pipx.pypa.io/stable/how-to/install-pipx/)
 
