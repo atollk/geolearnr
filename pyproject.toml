@@ -29,6 +29,10 @@ dev = [
     "pillow>=12.2.0",
 ]
 
+[project.urls]
+sourcecode = "https://codeberg.org/atollk/guess_explainr/"
+GitHub = "https://github.com/atollk/guess_explainr/"
+
 [project.scripts]
 guess-explainr = "guess_explainr.__main__:main"
 
