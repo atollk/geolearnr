@@ -5,6 +5,10 @@ Improve your Geoguessr game by learning from your past games and mistakes!
 The idea of Guess Explainr is to use AI in combination with community guides (shout-out to PlonkIt) to help you learn from a round you could not solve by extracting the relevant information from those guides. (Notably, Guess Explainr was not created to cheat in competitive games.)
 As an example, you might have guessed "Indonesia" on a round but your opponent correctly deduced "Malaysia" as the actual country - you can use Guess Explainr to understand which clues your opponent might have used and learn them for your next game.
 
+> [!IMPORTANT]
+> Guess Explainr is currently in an Early Release. Not all features might function properly. Create an issue if you are encountering problems.
+
+
 ## Screenshots
 
 ![](screenshots/screen3.png)

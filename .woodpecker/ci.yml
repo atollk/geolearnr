@@ -1,0 +1,30 @@
+when:
+  - event: push
+    branch: main
+  - event: pull_request
+    branch: main
+
+# All four steps run in parallel (depends_on: [] = no prerequisites).
+# Remove depends_on from each step to run them sequentially instead.
+steps:
+  - name: lint
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: []
+    commands:
+      - uv sync --group dev
+      - uv run ruff check .
+      - uv run ruff format --check .
+
+  - name: typecheck
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: []
+    commands:
+      - uv sync --group dev
+      - uv run pyrefly check
+
+  - name: test
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: []
+    commands:
+      - uv sync --group dev
+      - uv run pytest

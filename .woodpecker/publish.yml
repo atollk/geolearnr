@@ -1,0 +1,34 @@
+when:
+  - event: tag
+    ref: refs/tags/v*
+
+steps:
+  - name: build
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    commands:
+      - uv build
+
+  # Smoke tests run in parallel once the build artifact is ready.
+  - name: smoke-test-wheel
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: [build]
+    commands:
+      - uv run --isolated --no-project --with "dist/*.whl" tests/smoke_test.py
+
+  - name: smoke-test-sdist
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: [build]
+    commands:
+      - uv run --isolated --no-project --with "dist/*.tar.gz" tests/smoke_test.py
+
+  - name: publish
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm-slim
+    depends_on: [smoke-test-wheel, smoke-test-sdist]
+    # Secret "PYPI_TOKEN" must be added in the Woodpecker repo settings.
+    # Unlike GitHub Actions, Woodpecker does not support PyPI's OIDC trusted
+    # publisher — a long-lived API token is required instead.
+    environment:
+      UV_PUBLISH_TOKEN:
+        from_secret: PYPI_TOKEN
+    commands:
+      - uv publish

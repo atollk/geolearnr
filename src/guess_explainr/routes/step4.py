@@ -15,7 +15,10 @@ from guess_explainr.ai import stream_analysis
 def _render(text: str) -> str:
     # The Markdown library requires a blank line before a list when it follows
     # a paragraph; LLMs often omit that blank line, so we insert it.
-    text = re.sub(r"(?m)(?<=[^\n])\n([ \t]*[*\-+] )", r"\n\n\1", text)
+    # The negative lookahead (?![ \t]*[*\-+] ) ensures we only match lines that
+    # are NOT themselves list items, so existing list items don't get a blank
+    # line inserted between them (which would make a "loose" list).
+    text = re.sub(r"(?m)^(?![ \t]*[*\-+] )(.+)\n([ \t]*[*\-+] )", r"\1\n\n\2", text)
     return _md.markdown(text, extensions=["extra"])
 
 

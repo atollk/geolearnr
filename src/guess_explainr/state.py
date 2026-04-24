@@ -36,7 +36,7 @@ def get_config() -> StateConfig:
     try:
         with open(_config_file) as f:
             config = json.load(f)
-    except FileNotFoundError:
+    except (FileNotFoundError, json.JSONDecodeError):
         return StateConfig()
     try:
         return StateConfig(
@@ -45,7 +45,7 @@ def get_config() -> StateConfig:
             api_key=config["api_key"],
             maps_api_key=config.get("maps_api_key") or None,
         )
-    except (TypeError, AttributeError, KeyError):
+    except (TypeError, AttributeError, KeyError, ValueError):
         return StateConfig()
 
 

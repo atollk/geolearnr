@@ -1,0 +1,35 @@
+# Triggered by a named cron job configured in the Woodpecker UI,
+# or manually via the UI / API.
+# Cron schedule to create in Woodpecker: "pull-sources-monthly" → @monthly
+when:
+  - event: cron
+    cron: pull-sources-monthly
+  - event: manual
+
+steps:
+  - name: pull-sources
+    # Use the non-slim image so git and curl are available.
+    image: ghcr.io/astral-sh/uv:python3.12-bookworm
+    # Secret "GIT_PUSH_TOKEN" must be added in the Woodpecker repo settings.
+    settings:
+      GIT_PUSH_TOKEN:
+        from_secret: GIT_PUSH_TOKEN
+    commands:
+      # Install just from the official install script.
+      - curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
+      - uv sync --group dev
+      - just pull-sources
+
+      - git config user.name "woodpecker-ci[bot]"
+      - git config user.email "woodpecker-ci[bot]@users.noreply.local"
+      - git add -A
+      # Inject the push token into the remote URL so git can authenticate.
+      - git remote set-url origin "$(git remote get-url origin | sed 's|https://|https://woodpecker-ci-bot:'"$GIT_PUSH_TOKEN"'@|')"
+      - |
+        if git diff --cached --quiet; then
+          echo "No changes to commit."
+        else
+          git commit -m "chore: update plonkit sources [skip ci]"
+          git push
+        fi
