@@ -13,6 +13,6 @@ steps:
         from_secret: PYPI_TOKEN
     commands:
       - uv build
-      - uv run --isolated --no-project --with "dist/*.whl" tests/smoke_test.py
-      - uv run --isolated --no-project --with "dist/*.tar.gz" tests/smoke_test.py
+      - uv run --isolated --no-project --with dist/*.whl tests/smoke_test.py
+      - uv run --isolated --no-project --with dist/*.tar.gz tests/smoke_test.py
       - uv publish
