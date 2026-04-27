@@ -1,17 +1,14 @@
 import asyncio
 import dataclasses
 import glob
-import json
 import re
 import urllib.parse
-import uuid
 from dataclasses import dataclass
 
 from geopy import Location
 from geopy.geocoders import Nominatim
 from litestar import post
 from litestar.exceptions import HTTPException
-from litestar.response import Template
 
 from guess_explainr import state
 from guess_explainr.models import ProcessUrlRequest
@@ -245,7 +242,7 @@ async def _country_from_coords(lat: float, lon: float) -> _Country | None:
 
 
 @post("/process-url")
-async def process_url(data: ProcessUrlRequest) -> Template:
+async def process_url(data: ProcessUrlRequest) -> dict:
     location = GoogleMapsLocation.parse(data.url)
     state.in_memory_state.panorama_id = location.panorama_id
     state.in_memory_state.panorama_image_bytes = None
@@ -259,16 +256,11 @@ async def process_url(data: ProcessUrlRequest) -> Template:
         raise HTTPException(status_code=400, detail=str(e)) from e
     if country is None:
         country = _Country(id="", display_name="")
-    return Template(
-        template_name="partials/step3_content.html",
-        context={
-            "detected_country": country,
-            "available_countries": COUNTRIES,
-            "available_countries_json": json.dumps([dataclasses.asdict(c) for c in COUNTRIES]),
-            "panorama_available": state.in_memory_state.panorama_image_bytes is not None,
-            "panorama_token": uuid.uuid4().hex,
-        },
-    )
+    return {
+        "detected_country": dataclasses.asdict(country),
+        "available_countries": [dataclasses.asdict(c) for c in COUNTRIES],
+        "panorama_available": state.in_memory_state.panorama_image_bytes is not None,
+    }
 
 
 def extract_panorama_id(url: str) -> str:

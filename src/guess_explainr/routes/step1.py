@@ -1,5 +1,4 @@
 from litestar import get, post
-from litestar.response import Template
 from pydantic import BaseModel
 
 from guess_explainr import state
@@ -7,20 +6,14 @@ from guess_explainr.model_provider import ModelProvider
 
 
 @get("/models")
-async def get_models(provider: str = "openai", api_key: str = "") -> Template:
+async def get_models(provider: str = "openai", api_key: str = "") -> dict:
     if not api_key:
-        return Template(
-            template_name="partials/models_options.html",
-            context={"models": [], "placeholder": "Enter API key to load models…"},
-        )
+        return {"models": [], "placeholder": "Enter API key to load models…"}
     try:
         models = await ModelProvider(provider).load_model_list(api_key)
     except Exception:
-        return Template(
-            template_name="partials/models_options.html",
-            context={"models": [], "error": "Could not load models — check your API key"},
-        )
-    return Template(template_name="partials/models_options.html", context={"models": models})
+        return {"models": [], "error": "Could not load models — check your API key"}
+    return {"models": models}
 
 
 @get("/config")
@@ -36,10 +29,10 @@ class ConfigRequest(BaseModel):
 
 
 @post("/config")
-async def save_config(data: ConfigRequest) -> Template:
+async def save_config(data: ConfigRequest) -> dict:
     with state.modify_config() as config:
         config.ai_provider = ModelProvider(data.provider)
         config.ai_model = data.model
         config.api_key = data.api_key
         config.maps_api_key = data.maps_api_key or None
-    return Template(template_name="partials/config_success.html", context={})
+    return {"success": True}

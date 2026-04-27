@@ -197,6 +197,9 @@ cython_debug/
 # Node
 node_modules/
 
+# Svelte build output
+src/guess_explainr/static/app/
+
 # PyPI configuration file
 .pypirc
 

@@ -65,8 +65,9 @@ def test_compare_no_countries_returns_400(client):
 def test_compare_valid_renders_stream_url(client):
     r = client.post("/api/compare", json={"compare_countries": ["france"], "questions": ""})
     assert r.status_code in (200, 201)
-    assert "analysis-stream" in r.text
-    assert "france" in r.text
+    body = r.json()
+    assert "analysis-stream" in body["stream_url"]
+    assert "france" in body["stream_url"]
 
 
 def test_compare_multiple_countries(client):
@@ -75,8 +76,9 @@ def test_compare_multiple_countries(client):
         json={"compare_countries": ["france", "germany"], "questions": ""},
     )
     assert r.status_code in (200, 201)
-    assert "france" in r.text
-    assert "germany" in r.text
+    body = r.json()
+    assert "france" in body["stream_url"]
+    assert "germany" in body["stream_url"]
 
 
 # ---------------------------------------------------------------------------

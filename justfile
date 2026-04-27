@@ -8,6 +8,23 @@ default:
 bootstrap:
     uv sync --group dev
     prek install
+    cd frontend && npm install
+
+# Install frontend npm dependencies
+bootstrap-frontend:
+    cd frontend && npm install
+
+# Run Vite dev server with HMR on port 5173 (requires just dev running separately)
+dev-frontend:
+    cd frontend && npm run dev
+
+# Build Svelte app into static/app/
+build-frontend:
+    cd frontend && npm run build
+
+# Type-check frontend
+check-frontend:
+    cd frontend && npm run check
 
 # Run development server with auto-reload
 dev:
