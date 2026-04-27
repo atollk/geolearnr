@@ -1,5 +1,6 @@
+from pathlib import Path
+
 from litestar import Router, get
-from litestar.response import Template
 
 from guess_explainr.routes.panorama import panorama_image
 from guess_explainr.routes.step1 import get_config, get_models, save_config
@@ -7,10 +8,12 @@ from guess_explainr.routes.step2 import process_url
 from guess_explainr.routes.step3 import compare
 from guess_explainr.routes.step4 import analysis_stream, chat, new_chat_id
 
+_SPA_INDEX = Path(__file__).parent.parent / "static" / "app" / "index.html"
 
-@get("/")
-async def index() -> Template:
-    return Template(template_name="wizard.html", context={"title": "Guess Explainr"})
+
+@get("/", media_type="text/html")
+async def index() -> bytes:
+    return _SPA_INDEX.read_bytes()
 
 
 api_router = Router(
