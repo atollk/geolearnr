@@ -2,13 +2,13 @@
   import { getModels, saveConfig } from '../lib/api'
 
   interface Props {
-    onsaved: () => void
+    onSaved: () => void
   }
 
-  const { onsaved }: Props = $props()
+  const { onSaved }: Props = $props()
 
   let provider = $state('openai')
-  let apiKey = $state('')
+  let modelsApiKey = $state('')
   let mapsApiKey = $state('')
   let model = $state('')
   let models: string[] = $state([])
@@ -19,7 +19,7 @@
   let error: string | undefined = $state(undefined)
 
   async function loadModels() {
-    if (!apiKey) {
+    if (!modelsApiKey) {
       models = []
       modelsError = undefined
       modelsPlaceholder = 'Enter API key to load models…'
@@ -28,7 +28,7 @@
     modelsLoading = true
     modelsError = undefined
     try {
-      const res = await getModels(provider, apiKey)
+      const res = await getModels(provider, modelsApiKey)
       models = res.models
       modelsError = res.error
       modelsPlaceholder = res.placeholder ?? ''
@@ -46,8 +46,8 @@
     saving = true
     error = undefined
     try {
-      await saveConfig({ provider, model, api_key: apiKey, maps_api_key: mapsApiKey })
-      onsaved()
+      await saveConfig({ provider, model, api_key: modelsApiKey, maps_api_key: mapsApiKey })
+      onSaved()
     } catch (err) {
       error = err instanceof Error ? err.message : 'An unexpected error occurred.'
     } finally {
@@ -79,7 +79,7 @@
       class="input input-bordered"
       placeholder="Your API key"
       required
-      bind:value={apiKey}
+      bind:value={modelsApiKey}
       onchange={loadModels}
     />
   </div>
@@ -112,7 +112,7 @@
       class="input input-bordered"
       bind:value={mapsApiKey}
     />
-    <label class="label">
+    <label class="label" for="maps-api-key">
       <span class="label-text-alt text-base-content/50">
         You can set up an API key for free with thousands of calls per month:
         <a href="https://developers.google.com/maps/documentation/tile/get-api-key">Click here</a>
@@ -128,6 +128,6 @@
   {/if}
 
   <button type="submit" class="btn btn-primary w-full" disabled={saving}>
-    {saving ? 'Saving…' : 'Save & Continue'}
+    {saving ? 'Saving...' : 'Save & Continue'}
   </button>
 </form>
