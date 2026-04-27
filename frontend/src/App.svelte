@@ -10,6 +10,8 @@
 
     type stepsType = 1 | 2 | 3 | 4;
 
+    let isPreloading = $state(true)
+
     // --- PlonkIt sync state ---
     let plonkitReady = $state(false)
     let plonkitDone = $state(0)
@@ -28,7 +30,7 @@
 
     onMount(async () => {
         // Poll until the backend finishes the PlonkIt sync
-        while (true) {
+        while (!plonkitReady) {
             try {
                 const s = await getPlonkitStatus()
                 plonkitDone = s.done
@@ -36,15 +38,16 @@
                 plonkitError = s.error ?? null
                 if (s.ready || s.error) {
                     plonkitReady = true
-                    break
+                } else {
+                    await new Promise((r) => setTimeout(r, 1000))
                 }
             } catch (_) {
                 // backend not yet ready — keep polling
+                await new Promise((r) => setTimeout(r, 1000))
             }
-            await new Promise((r) => setTimeout(r, 1000))
         }
 
-        // Then check whether the LLM is already configured
+        // Check config before revealing the wizard to avoid step 1→2 flash
         try {
             const cfg = await getConfig();
             if (cfg.configured) {
@@ -53,6 +56,7 @@
             }
         } catch (_) {
         }
+        isPreloading = false
     });
 
     function goToStep(n: stepsType) {
@@ -98,83 +102,85 @@
     }
 </script>
 
-{#if !plonkitReady}
-    <div class="flex flex-col items-center justify-center min-h-screen gap-4">
-        {#if plonkitError}
-            <p class="text-error max-w-sm text-center">{plonkitError}</p>
-        {:else}
-            <span class="loading loading-spinner loading-lg"></span>
-            <p class="text-base-content/70">
+{#if !isPreloading}
+    {#if !plonkitReady}
+        <div class="flex flex-col items-center justify-center min-h-screen gap-4">
+            {#if plonkitError}
+                <p class="text-error max-w-sm text-center">{plonkitError}</p>
+            {:else}
+                <span class="loading loading-spinner loading-lg"></span>
+                <p class="text-base-content/70">
+                    {#if plonkitTotal > 0}
+                        Syncing country guides… {plonkitDone} / {plonkitTotal}
+                    {:else}
+                        Checking country guides…
+                    {/if}
+                </p>
                 {#if plonkitTotal > 0}
-                    Syncing country guides… {plonkitDone} / {plonkitTotal}
-                {:else}
-                    Checking country guides…
+                    <progress class="progress w-56" value={plonkitDone} max={plonkitTotal}></progress>
                 {/if}
-            </p>
-            {#if plonkitTotal > 0}
-                <progress class="progress w-56" value={plonkitDone} max={plonkitTotal}></progress>
             {/if}
-        {/if}
-    </div>
-{:else}
-    <nav class="navbar bg-base-200 shadow-sm">
-        <div class="navbar-start">
-            <a href="/" class="btn btn-ghost text-xl font-bold">Guess Explainr</a>
         </div>
-    </nav>
+    {:else}
+        <nav class="navbar bg-base-200 shadow-sm">
+            <div class="navbar-start">
+                <a href="/" class="btn btn-ghost text-xl font-bold">Guess Explainr</a>
+            </div>
+        </nav>
 
-    <main class="container mx-auto px-4 py-8">
-        <StepIndicator {step} {maxReached} {onStepClick}/>
+        <main class="container mx-auto px-4 py-8">
+            <StepIndicator {step} {maxReached} {onStepClick}/>
 
-        {#if step === 1}
-            <section>
-                <div class="card bg-base-200 max-w-lg mx-auto">
-                    <div class="card-body">
-                        <h2 class="card-title">Configure LLM</h2>
-                        <Step1Config {onSaved}/>
+            {#if step === 1}
+                <section>
+                    <div class="card bg-base-200 max-w-lg mx-auto">
+                        <div class="card-body">
+                            <h2 class="card-title">Configure LLM</h2>
+                            <Step1Config {onSaved}/>
+                        </div>
                     </div>
-                </div>
-            </section>
-        {/if}
+                </section>
+            {/if}
 
-        {#if step === 2}
-            <section>
-                <div class="card bg-base-200 max-w-lg mx-auto">
-                    <div class="card-body">
-                        <h2 class="card-title">Paste a Google Maps URL</h2>
-                        <Step2Url {onUrlProcessed}/>
+            {#if step === 2}
+                <section>
+                    <div class="card bg-base-200 max-w-lg mx-auto">
+                        <div class="card-body">
+                            <h2 class="card-title">Paste a Google Maps URL</h2>
+                            <Step2Url {onUrlProcessed}/>
+                        </div>
                     </div>
-                </div>
-            </section>
-        {/if}
+                </section>
+            {/if}
 
-        {#if step === 3}
-            <section>
-                <div class="card bg-base-200 max-w-2xl mx-auto">
-                    <div class="card-body">
-                        <h2 class="card-title">Compare Countries</h2>
-                        <Step3Countries
-                                {availableCountries}
-                                {detectedCountry}
-                                {panoramaAvailable}
-                                {selectedCountries}
-                                toggleCountry={toggleCountry}
-                                {onCompared}
-                        />
+            {#if step === 3}
+                <section>
+                    <div class="card bg-base-200 max-w-2xl mx-auto">
+                        <div class="card-body">
+                            <h2 class="card-title">Compare Countries</h2>
+                            <Step3Countries
+                                    {availableCountries}
+                                    {detectedCountry}
+                                    {panoramaAvailable}
+                                    {selectedCountries}
+                                    toggleCountry={toggleCountry}
+                                    {onCompared}
+                            />
+                        </div>
                     </div>
-                </div>
-            </section>
-        {/if}
+                </section>
+            {/if}
 
-        {#if step === 4}
-            <section>
-                <div class="card bg-base-200 max-w-3xl mx-auto">
-                    <div class="card-body">
-                        <h2 class="card-title">Analysis &amp; Chat</h2>
-                        <Step4Analysis {streamUrl} context={chatContext}/>
+            {#if step === 4}
+                <section>
+                    <div class="card bg-base-200 max-w-3xl mx-auto">
+                        <div class="card-body">
+                            <h2 class="card-title">Analysis &amp; Chat</h2>
+                            <Step4Analysis {streamUrl} context={chatContext}/>
+                        </div>
                     </div>
-                </div>
-            </section>
-        {/if}
-    </main>
+                </section>
+            {/if}
+        </main>
+    {/if}
 {/if}
