@@ -5,6 +5,7 @@ from litestar import get
 from litestar.exceptions import HTTPException
 from litestar.response import ServerSentEvent, ServerSentEventMessage
 from litestar.types import SSEData
+from pydantic import BaseModel
 
 from guess_explainr.ai import stream_analysis
 
@@ -25,9 +26,13 @@ async def chat(message: str, context: str = "") -> ServerSentEvent:
     return ServerSentEvent(_stream())
 
 
+class _NewChatIdResponse(BaseModel):
+    id: str
+
+
 @get("/new-chat-id")
-async def new_chat_id() -> dict:
-    return {"id": str(uuid.uuid4())}
+async def new_chat_id() -> _NewChatIdResponse:
+    return _NewChatIdResponse(id=str(uuid.uuid4()))
 
 
 @get("/analysis-stream")
